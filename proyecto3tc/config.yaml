@@ -1,0 +1,209 @@
+# Lista de estados
+q_states:
+  q_list:
+    - 'q0'       # Estado inicial
+    - 'q1'       # Estado para buscar el primer 'b' después de una 'a' marcada
+    - 'q2'       # Estado para regresar al inicio después de marcar una 'b'
+    - 'q3'       # Estado para verificar que no haya 'a's después de las 'b's
+    - 'q_accept' # Estado final de aceptación
+    - 'q_reject' # Estado de rechazo
+  initial: 'q0'
+  final:
+    - 'q_accept'
+
+# Alfabeto de entrada
+alphabet:
+  - 'a'
+  - 'b'
+
+# Alfabeto de la cinta (incluye símbolos adicionales para marcar posiciones)
+tape_alphabet:
+  - 'a'
+  - 'b'
+  - 'X'  # Marca para 'a' ya procesada
+  - 'Y'  # Marca para 'b' ya procesada
+  - '#'  # Blanco (símbolo vacío)
+
+# Función de transición
+delta:
+  # Estado q0: Si encuentra 'X', saltarla
+  - params:
+      initial_state: 'q0'
+      tape_input: 'X'
+    output:
+      final_state: 'q0'
+      tape_output: 'X'
+      tape_displacement: 'R'
+
+  # Estado q0: Si encuentra 'a' sin marcar, marcarla y pasar a q1
+  - params:
+      initial_state: 'q0'
+      tape_input: 'a'
+    output:
+      final_state: 'q1'
+      tape_output: 'X'
+      tape_displacement: 'R'
+
+  # Estado q0: Si encuentra 'Y', saltarla
+  - params:
+      initial_state: 'q0'
+      tape_input: 'Y'
+    output:
+      final_state: 'q0'
+      tape_output: 'Y'
+      tape_displacement: 'R'
+
+  # **Estado q0: Si encuentra 'b', rechazar**
+  - params:
+      initial_state: 'q0'
+      tape_input: 'b'
+    output:
+      final_state: 'q_reject'
+      tape_output: 'b'
+      tape_displacement: 'N'
+
+  # Estado q0: Si encuentra blanco (#), todas las letras han sido procesadas
+  - params:
+      initial_state: 'q0'
+      tape_input: '#'
+    output:
+      final_state: 'q_accept'
+      tape_output: '#'
+      tape_displacement: 'N'
+
+  # Estado q1: Si encuentra 'a', saltarla
+  - params:
+      initial_state: 'q1'
+      tape_input: 'a'
+    output:
+      final_state: 'q1'
+      tape_output: 'a'
+      tape_displacement: 'R'
+
+  # Estado q1: Si encuentra 'X', saltarla
+  - params:
+      initial_state: 'q1'
+      tape_input: 'X'
+    output:
+      final_state: 'q1'
+      tape_output: 'X'
+      tape_displacement: 'R'
+
+  # **Estado q1: Si encuentra 'Y', saltarla**
+  - params:
+      initial_state: 'q1'
+      tape_input: 'Y'
+    output:
+      final_state: 'q1'
+      tape_output: 'Y'
+      tape_displacement: 'R'
+
+  # Estado q1: Si encuentra 'b', marcarla y regresar
+  - params:
+      initial_state: 'q1'
+      tape_input: 'b'
+    output:
+      final_state: 'q2'
+      tape_output: 'Y'
+      tape_displacement: 'L'
+
+  # Estado q1: Si encuentra blanco (#), rechazar
+  - params:
+      initial_state: 'q1'
+      tape_input: '#'
+    output:
+      final_state: 'q_reject'
+      tape_output: '#'
+      tape_displacement: 'N'
+
+  # Estado q2: Regresar al inicio de la cinta
+  - params:
+      initial_state: 'q2'
+      tape_input: 'a'
+    output:
+      final_state: 'q2'
+      tape_output: 'a'
+      tape_displacement: 'L'
+
+  - params:
+      initial_state: 'q2'
+      tape_input: 'X'
+    output:
+      final_state: 'q2'
+      tape_output: 'X'
+      tape_displacement: 'L'
+
+  - params:
+      initial_state: 'q2'
+      tape_input: 'Y'
+    output:
+      final_state: 'q2'
+      tape_output: 'Y'
+      tape_displacement: 'L'
+
+  - params:
+      initial_state: 'q2'
+      tape_input: 'b'
+    output:
+      final_state: 'q2'
+      tape_output: 'b'
+      tape_displacement: 'L'
+
+  # Estado q2: Si llega al extremo izquierdo de la cinta (blanco), volver a q0
+  - params:
+      initial_state: 'q2'
+      tape_input: '#'
+    output:
+      final_state: 'q0'
+      tape_output: '#'
+      tape_displacement: 'R'
+
+  # Estado q3: Verificar que no haya 'a's o 'X's restantes
+  - params:
+      initial_state: 'q3'
+      tape_input: 'Y'
+    output:
+      final_state: 'q3'
+      tape_output: 'Y'
+      tape_displacement: 'R'
+
+  # **Estado q3: Si encuentra 'b', rechazar**
+  - params:
+      initial_state: 'q3'
+      tape_input: 'b'
+    output:
+      final_state: 'q_reject'
+      tape_output: 'b'
+      tape_displacement: 'N'
+
+  - params:
+      initial_state: 'q3'
+      tape_input: '#'
+    output:
+      final_state: 'q_accept'
+      tape_output: '#'
+      tape_displacement: 'N'
+
+  # Estado q3: Si encuentra 'a' o 'X', rechazar
+  - params:
+      initial_state: 'q3'
+      tape_input: 'a'
+    output:
+      final_state: 'q_reject'
+      tape_output: 'a'
+      tape_displacement: 'N'
+
+  - params:
+      initial_state: 'q3'
+      tape_input: 'X'
+    output:
+      final_state: 'q_reject'
+      tape_output: 'X'
+      tape_displacement: 'N'
+
+# Cadenas a ser simuladas
+simulation_strings:
+  - "aaabbb"    # Cadena válida (n=3)
+  - "aaaabbbb"  # Cadena válida (n=4)
+  - "aaabb"     # Cadena no válida (número de 'a's y 'b's no coincide)
+  - "aabbb"     # Cadena no válida (número de 'a's y 'b's no coincide)

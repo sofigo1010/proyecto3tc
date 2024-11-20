@@ -1,0 +1,57 @@
+# Lista de estados
+q_states:
+  q_list:
+    - 'q0'        # Estado inicial
+    - 'q_accept'  # Estado de aceptación
+  initial: 'q0'
+  final:
+    - 'q_accept'
+
+# Alfabeto de entrada
+alphabet:
+  - 'a'
+  - 'b'
+
+# Alfabeto de la cinta
+tape_alphabet:
+  - 'a'
+  - 'b'
+  - 'X'   # Reemplazo de 'a'
+  - 'Y'   # Reemplazo de 'b'
+  - '#'   # Blanco (símbolo vacío)
+
+# Función de transición
+delta:
+  # Estado q0: Cambiar 'a' por 'X' y avanzar
+  - params:
+      initial_state: 'q0'
+      tape_input: 'a'
+    output:
+      final_state: 'q0'
+      tape_output: 'X'
+      tape_displacement: 'R'
+
+  # Estado q0: Cambiar 'b' por 'Y' y avanzar
+  - params:
+      initial_state: 'q0'
+      tape_input: 'b'
+    output:
+      final_state: 'q0'
+      tape_output: 'Y'
+      tape_displacement: 'R'
+
+  # Estado q0: Si encuentra blanco (#), aceptar
+  - params:
+      initial_state: 'q0'
+      tape_input: '#'
+    output:
+      final_state: 'q_accept'
+      tape_output: '#'
+      tape_displacement: 'N'
+
+# Cadenas a ser simuladas
+simulation_strings:
+  - "aaabb"     # Cadena de longitud 5
+  - "aabbb"     # Cadena de longitud 5
+  - "abbba"     # Cadena de longitud 5
+  - "baaaa"     # Cadena de longitud 5
